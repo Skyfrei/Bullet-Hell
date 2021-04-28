@@ -20,6 +20,7 @@ namespace PixivAPI
         public Airship.Player player;
         public List<Airship.EnemyAirships> enemyList;
         public List<Airship.Blueprint.Bullets> bulletList;
+        public List<Airship.Blueprint.Bullets> enemyBullets;
         public int count;
         public void Run()
         {
@@ -31,6 +32,7 @@ namespace PixivAPI
 
             enemyList = new List<Airship.EnemyAirships>();
             bulletList = new List<Airship.Blueprint.Bullets>();
+            enemyBullets = new List<Airship.Blueprint.Bullets>();
             
             for (int i = 0; i < 50; i++)
             {
@@ -41,6 +43,11 @@ namespace PixivAPI
             enemyList.Add(new Airship.EnemyAirships());
             enemyList.Add(new Airship.EnemyAirships());
             enemyList.Add(new Airship.EnemyAirships());
+
+            for (int i = 0; i < 300; i++)
+            {
+                enemyBullets.Add(new Airship.Blueprint.Bullets(enemyList[0].Position));
+            }
 
 
             var scoreText = new SFML.Graphics.Text($"Score: {player.Score}", new SFML.Graphics.Font("myfont.ttf"));
@@ -63,8 +70,11 @@ namespace PixivAPI
             foreach (Airship.EnemyAirships element in enemyList)
             {
                 window.Draw(element.airshipShape);
-                if (count == 100){
+                if (count == 150){
                     element.update(window);
+                    enemyBullets[0].thrown = true;
+                    window.Draw(enemyBullets[0].bulletShape);
+                    enemyBullets[0].update(enemyList[0].Position);
                     if (enemyList.IndexOf(element) == enemyList.Count - 1)
                     {
                         count = 0;
@@ -72,25 +82,28 @@ namespace PixivAPI
                 }
             }
             for (int i = 0; i < bulletList.Count; i++)
-            {   
+            {      
                 if (bulletList[i].thrown == true)
                 {
                     window.Draw(bulletList[i].bulletShape); 
                     bulletList[i].update(player.Position);
                 }
                 
-                for (int j = enemyList.Count - 1; j >= 0; j--)
+                for (int j = enemyList.Count - 1; j > -1; j--)
                 {
-                    if (enemyList[j].Health <= 0)
-                    {
-                        enemyList.Remove(enemyList[j]);
-                    }
-                    if (bulletList[i].Position.X - 35 == enemyList[j].Position.X &&
+                    if (bulletList[i].Position.X + 50 >= enemyList[j].Position.X &&
+                        bulletList[i].Position.X - 50 <= enemyList[j].Position.X &&
                         bulletList[i].Position.Y == enemyList[j].Position.Y )
                     {
                        enemyList[j].Health = 20; 
-                       bulletList[i].thrown = false;
                        Console.WriteLine(enemyList[j].Health);
+                        if (enemyList[j].Health <= 0)
+                        {
+                            player.Score++;
+                            enemyList.RemoveAt(j);
+                        }
+                        bulletList[i].update(player.Position);
+                        bulletList[i].thrown = false;
                     }
                 }
             }

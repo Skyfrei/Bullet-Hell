@@ -28,28 +28,33 @@ namespace Airship
             }
             public void update(SFML.System.Vector2f vectorPosition)
             {
+                if (vectorPosition.Y > 700)
                 {
                     if (this.Position.Y - 10 >= 0)
                     {
                         this.Position = new SFML.System.Vector2f( vectorPosition.X + 35, this.Position.Y - 10);
                         this.bulletShape.Position = this.Position;
                     }
-                    else if (this.Position.Y <= 0)
+                    else if (this.Position.Y <= 0 || this.Position.X >= 800 || this.Position.X <= 0)
                     {
                         this.thrown = false;
                         this.Position = new SFML.System.Vector2f(vectorPosition.X + 35, vectorPosition.Y - 20);   
                     }
-                    else if (this.Position.Y >= 1000)
+                } 
+                else
+                {
+                    if (this.Position.Y + 10 <= 1000)
                     {
-                        this.thrown = false;
-                        this.Position = new SFML.System.Vector2f(vectorPosition.X + 35, vectorPosition.Y - 20); 
-                    }
-                    else if (this.Position.Y + 10 < 1000)
-                    {
-                        this.Position = new SFML.System.Vector2f( vectorPosition.X + 35, this.Position.Y + 10);
+                        this.Position = new SFML.System.Vector2f( vectorPosition.X - 35, this.Position.Y + 10);
                         this.bulletShape.Position = this.Position;
                     }
+                    else if (this.Position.Y >= 1000 || this.Position.X >= 800 || this.Position.X <= 0)
+                    {
+                        this.thrown = false;
+                        this.Position = new SFML.System.Vector2f(vectorPosition.X - 35, vectorPosition.Y + 20);   
+                    }
                 }
+                   
             }
         }
         public interface Skills{
@@ -60,12 +65,11 @@ namespace Airship
     class EnemyAirships : Blueprint, Blueprint.Skills
     {
         private System.Random random = new System.Random(); 
-        public int Health{
+        public int Health
+        {
             get{return this.health;}
-            set
-            {
-                this.health -= value;
-            }}
+            set{this.health -= value;}
+        }
         public EnemyAirships()
         {
              this.airshipShape = new SFML.Graphics.CircleShape(40, 3)
