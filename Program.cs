@@ -21,6 +21,8 @@ namespace PixivAPI
         public List<Airship.EnemyAirships> enemyList;
         public List<Airship.Blueprint.Bullets> bulletList;
         public List<Airship.Blueprint.Bullets> enemyBullets;
+        public SFML.Graphics.Text game = new SFML.Graphics.Text($"Game Over! Click space to restart!", new SFML.Graphics.Font("myfont.ttf"));
+           
         public int count;
         public void Run()
         {
@@ -44,7 +46,7 @@ namespace PixivAPI
             enemyList.Add(new Airship.EnemyAirships());
             enemyList.Add(new Airship.EnemyAirships());
 
-            for (int i = 0; i < 300; i++)
+            for (int i = 0; i < 200; i++)
             {
                 enemyBullets.Add(new Airship.Blueprint.Bullets(enemyList[0].Position));
             }
@@ -64,23 +66,35 @@ namespace PixivAPI
         }
         public void render(SFML.Graphics.RenderWindow window, SFML.Graphics.Text scoreText)
         {
+
             player.update(player.Position, window);
             scoreText.DisplayedString = $"Score: {player.Score}";        
             window.Draw(player.airshipShape);
+
             foreach (Airship.EnemyAirships element in enemyList)
             {
                 window.Draw(element.airshipShape);
+
+                
                 if (count == 150){
-                    element.update(window);
                     enemyBullets[0].thrown = true;
-                    window.Draw(enemyBullets[0].bulletShape);
-                    enemyBullets[0].update(enemyList[0].Position);
+                    for (int i = 0; i < enemyBullets.Count; i++)
+                    {
+                        if (enemyBullets[i].thrown == true)
+                        {
+                            window.Draw(enemyBullets[i].bulletShape);
+                            enemyBullets[i].update(element.Position);
+                        }
+                    }
+                    element.update(window);
                     if (enemyList.IndexOf(element) == enemyList.Count - 1)
                     {
                         count = 0;
                     }
                 }
             }
+
+            
             for (int i = 0; i < bulletList.Count; i++)
             {      
                 if (bulletList[i].thrown == true)

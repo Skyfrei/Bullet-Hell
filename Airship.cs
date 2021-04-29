@@ -127,6 +127,10 @@ namespace Airship
     {
         private SFML.System.Vector2f movingDirection;
         public int Score{get; set;}
+        public int Health {
+            get {return this.health;}
+            set {this.health -= value;}
+        }
         public Player(float radius, uint pointCount)
         {       
             this.airshipShape = new SFML.Graphics.CircleShape(radius, pointCount)
