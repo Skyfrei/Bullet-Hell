@@ -15,6 +15,7 @@ namespace Airship
             public SFML.System.Vector2f Position{get; set;}
             public SFML.Graphics.CircleShape bulletShape;
             public bool thrown;
+            public SFML.System.Vector2f startingPosition{get; set;}
             public Bullets(SFML.System.Vector2f shootAngle)
             {
                 this.bulletShape = new SFML.Graphics.CircleShape(5)
@@ -24,6 +25,7 @@ namespace Airship
                 this.thrown = false;
                 this.Position = new SFML.System.Vector2f(shootAngle.X + 35, shootAngle.Y - 20);
                 this.bulletShape.Position = this.Position;
+                this.startingPosition = this.Position;
                 
             }
             public void update(SFML.System.Vector2f vectorPosition)
@@ -45,10 +47,10 @@ namespace Airship
                 {
                     if (this.Position.Y + 10 <= 1000)
                     {
-                        this.Position = new SFML.System.Vector2f( vectorPosition.X - 35, this.Position.Y + 10);
+                        this.Position = new SFML.System.Vector2f( this.Position.X, this.Position.Y + 0.1f);
                         this.bulletShape.Position = this.Position;
                     }
-                    else if (this.Position.Y >= 1000 || this.Position.X >= 800 || this.Position.X <= 0)
+                    else if (this.Position.Y > 900 || this.Position.X >= 800 || this.Position.X <= 0)
                     {
                         this.thrown = false;
                         this.Position = new SFML.System.Vector2f(vectorPosition.X - 35, vectorPosition.Y + 20);   

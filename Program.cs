@@ -74,22 +74,37 @@ namespace PixivAPI
             foreach (Airship.EnemyAirships element in enemyList)
             {
                 window.Draw(element.airshipShape);
+                int bulletCount = 0;
 
-                
-                if (count == 150){
-                    enemyBullets[0].thrown = true;
-                    for (int i = 0; i < enemyBullets.Count; i++)
+                for (int j = bulletCount; j < enemyBullets.Count; j++)
                     {
-                        if (enemyBullets[i].thrown == true)
+                        enemyBullets[j].thrown = true;
+                        if(j == enemyBullets.Count) 
                         {
-                            window.Draw(enemyBullets[i].bulletShape);
-                            enemyBullets[i].update(element.Position);
+                            bulletCount = 0;
+                        }
+                        if( j == 4)
+                        {
+                            bulletCount += 4;
+                            break;
                         }
                     }
+                
+                if (count == 150){
+                    
                     element.update(window);
                     if (enemyList.IndexOf(element) == enemyList.Count - 1)
                     {
                         count = 0;
+                    }
+                }
+
+                for (int v = 0; v < enemyBullets.Count; v++)
+                {   
+                    if (enemyBullets[v].thrown == true)
+                    {
+                        window.Draw(enemyBullets[v].bulletShape);
+                        enemyBullets[v].update(element.Position); 
                     }
                 }
             }
@@ -121,6 +136,16 @@ namespace PixivAPI
                     }
                 }
             }
+                for (int j = 0; j < enemyBullets.Count; j++)
+                {
+                    if (enemyBullets[j].Position.X  + 10 >= player.Position.X &&
+                        enemyBullets[j].Position.X - 10 <= player.Position.X &&
+                        enemyBullets[j].Position.Y == player.Position.Y )
+                    {
+                        player.Health = 10;
+                        Console.WriteLine(player.Health);
+                    }
+                }
 
             window.Draw(scoreText);
         }
