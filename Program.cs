@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace PixivAPI
 {
@@ -24,6 +25,7 @@ namespace PixivAPI
         public SFML.Graphics.Text game = new SFML.Graphics.Text($"Game Over! Click space to restart!", new SFML.Graphics.Font("myfont.ttf"));
            
         public int count;
+        public int bulletCount = 4;
         public void Run()
         {
             var window = new SFML.Graphics.RenderWindow(new SFML.Window.VideoMode(800, 1000), "SFML!");
@@ -60,13 +62,11 @@ namespace PixivAPI
                 count += 1;
                 render(window, scoreText);
                 window.DispatchEvents();
-                
                 window.Display();
             }
         }
         public void render(SFML.Graphics.RenderWindow window, SFML.Graphics.Text scoreText)
         {
-
             player.update(player.Position, window);
             scoreText.DisplayedString = $"Score: {player.Score}";        
             window.Draw(player.airshipShape);
@@ -74,41 +74,33 @@ namespace PixivAPI
             foreach (Airship.EnemyAirships element in enemyList)
             {
                 window.Draw(element.airshipShape);
-                int bulletCount = 0;
-
-                for (int j = bulletCount; j < enemyBullets.Count; j++)
+                    for (int j = 0; j < enemyBullets.Count; j += 4 )
                     {
-                        enemyBullets[j].thrown = true;
-                        if(j == enemyBullets.Count) 
+                        for (int kek = 0; kek < enemyList.Count; kek++)
                         {
-                            bulletCount = 0;
-                        }
-                        if( j == 4)
-                        {
-                            bulletCount += 4;
-                            break;
-                        }
+                            enemyBullets[kek + j].thrown = true;
+                            enemyBullets[kek + j].Position = enemyList[kek].Position;
+                        }  
                     }
-                
-                if (count == 150){
-                    
+
+                if (count == 150)
+                {
                     element.update(window);
                     if (enemyList.IndexOf(element) == enemyList.Count - 1)
                     {
                         count = 0;
                     }
-                }
-
-                for (int v = 0; v < enemyBullets.Count; v++)
-                {   
-                    if (enemyBullets[v].thrown == true)
-                    {
-                        window.Draw(enemyBullets[v].bulletShape);
-                        enemyBullets[v].update(element.Position); 
-                    }
+                    
                 }
             }
-
+            for (int v = 0; v < enemyBullets.Count; v++)
+            {   
+                if (enemyBullets[v].thrown == true)
+                {
+                        window.Draw(enemyBullets[v].bulletShape);   
+                        enemyBullets[v].update(enemyList[0].Position); 
+                }
+            }
             
             for (int i = 0; i < bulletList.Count; i++)
             {      
@@ -134,21 +126,29 @@ namespace PixivAPI
                         bulletList[i].update(player.Position);
                         bulletList[i].thrown = false;
                     }
+                    if (enemyList.Count == 0)
+                    {
+                        enemyList.Add(new Airship.EnemyAirships());
+                        enemyList.Add(new Airship.EnemyAirships());
+                        enemyList.Add(new Airship.EnemyAirships());
+                        enemyList.Add(new Airship.EnemyAirships());
+                    }
                 }
             }
                 for (int j = 0; j < enemyBullets.Count; j++)
                 {
-                    if (enemyBullets[j].Position.X  + 10 >= player.Position.X &&
-                        enemyBullets[j].Position.X - 10 <= player.Position.X &&
+                    if (enemyBullets[j].Position.X  + 50 >= player.Position.X &&
+                        enemyBullets[j].Position.X -  80 <= player.Position.X &&
                         enemyBullets[j].Position.Y == player.Position.Y )
                     {
                         player.Health = 10;
+                        enemyBullets[j].update(enemyList[0].Position);
+                        enemyBullets[j].thrown = false;
                         Console.WriteLine(player.Health);
                     }
                 }
-
             window.Draw(scoreText);
-        }
+        } 
 
         /// <summary>
             /// Function called when a key is pressed
@@ -160,15 +160,15 @@ namespace PixivAPI
             {
                 window.Close();
             }
-            if(e.Code == SFML.Window.Keyboard.Key.Left)
+            if(SFML.Window.Keyboard.IsKeyPressed(SFML.Window.Keyboard.Key.Left))
             {
                 player.moveShip(0);
             }
-            if(e.Code == SFML.Window.Keyboard.Key.Right)
+            if(SFML.Window.Keyboard.IsKeyPressed(SFML.Window.Keyboard.Key.Right))
             {
                 player.moveShip(1);
             }
-            if(e.Code == SFML.Window.Keyboard.Key.Space)
+            if(SFML.Window.Keyboard.IsKeyPressed(SFML.Window.Keyboard.Key.Space))
             {
                 foreach ( Airship.Blueprint.Bullets bullet in bulletList)
                 {
