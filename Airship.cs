@@ -34,23 +34,23 @@ namespace Airship
                 {
                     if (this.Position.Y - 10 >= 0)
                     {
-                        this.Position = new SFML.System.Vector2f( vectorPosition.X + 35, this.Position.Y - 10);
+                        this.Position = new SFML.System.Vector2f( vectorPosition.X + 35, this.Position.Y - 10f);
                         this.bulletShape.Position = this.Position;
                     }
                     else if (this.Position.Y <= 0 || this.Position.X >= 800 || this.Position.X <= 0)
                     {
                         this.thrown = false;
-                        this.Position = new SFML.System.Vector2f(vectorPosition.X + 35, vectorPosition.Y - 20);   
+                        this.Position = new SFML.System.Vector2f(vectorPosition.X + 35, vectorPosition.Y - 20f);   
                     }
-                } 
+                }
                 else
                 {
                     if (this.Position.Y + 10 <= 1000)
                     {
-                        this.Position = new SFML.System.Vector2f( this.Position.X, this.Position.Y + 0.1f);
+                        this.Position = new SFML.System.Vector2f( this.Position.X - 43, this.Position.Y + 0.1f);
                         this.bulletShape.Position = this.Position;
                     }
-                    else if (this.Position.Y > 900 || this.Position.X >= 800 || this.Position.X <= 0)
+                    else if (this.Position.Y > 950 || this.Position.X >= 800 || this.Position.X <= 0)
                     {
                         this.thrown = false;
                         this.Position = new SFML.System.Vector2f(vectorPosition.X - 35, vectorPosition.Y + 20);   
@@ -59,7 +59,7 @@ namespace Airship
                    
             }
         }
-        public interface Skills{
+                public interface Skills{
             int skill1();
         }
     }
