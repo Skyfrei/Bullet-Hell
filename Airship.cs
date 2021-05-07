@@ -48,7 +48,7 @@ namespace Airship
                 {
                     if (this.Position.Y + 10 <= 1000)
                     {
-                        this.Position = new SFML.System.Vector2f( this.Position.X  , this.Position.Y + 0.2f);
+                        this.Position = new SFML.System.Vector2f( this.Position.X  , this.Position.Y + 0.5f);
                         this.bulletShape.Position = this.Position;
                     }
                     else if (this.Position.Y >= 900 || this.Position.X >= 800 || this.Position.X <= 0)

@@ -96,7 +96,7 @@ namespace PixivAPI
 
             new Thread(() => {
             for (int v = 0; v < enemyBullets.Count; v++)
-            {   
+            {
                 while (enemyBullets[v].Position.Y + 10 <= 1000)
                 {
                     if (enemyBullets[v].thrown == true)
