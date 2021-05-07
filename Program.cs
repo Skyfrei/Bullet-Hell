@@ -26,6 +26,7 @@ namespace PixivAPI
            
         public int count;
         public int bulletCount = 4;
+        public Thread changeBulletThread; 
         public void Run()
         {
             var window = new SFML.Graphics.RenderWindow(new SFML.Window.VideoMode(800, 1000), "SFML!");
@@ -37,6 +38,7 @@ namespace PixivAPI
             enemyList = new List<Airship.EnemyAirships>();
             bulletList = new List<Airship.Blueprint.Bullets>();
             enemyBullets = new List<Airship.Blueprint.Bullets>();
+
             
             for (int i = 0; i < 50; i++)
             {
@@ -53,6 +55,7 @@ namespace PixivAPI
                 enemyBullets.Add(new Airship.Blueprint.Bullets(enemyList[0].Position));
             }
 
+            changeBulletThread = new Thread(new ThreadStart(() => changeBullet(enemyBullets)));
 
             var scoreText = new SFML.Graphics.Text($"Score: {player.Score}", new SFML.Graphics.Font("myfont.ttf"));
             while (window.IsOpen)
@@ -94,18 +97,7 @@ namespace PixivAPI
                 }
             }
 
-            new Thread(() => {
-            for (int v = 0; v < enemyBullets.Count; v++)
-            {
-                while (enemyBullets[v].Position.Y + 10 <= 1000)
-                {
-                    if (enemyBullets[v].thrown == true)
-                    {
-                        enemyBullets[v].update(enemyList[0].Position); 
-                    }
-                }
-            }
-            }).Start();
+            changeBulletThread.Start();
 
             for (int v = 0; v < enemyBullets.Count; v++)
             {   
@@ -162,6 +154,20 @@ namespace PixivAPI
                 }
             window.Draw(scoreText);
         } 
+
+        public void changeBullet(List<Airship.Blueprint.Bullets> enemyBulletsArray)
+        {
+            for (int v = 0; v < enemyBullets.Count; v++)
+            {
+                while (enemyBullets[v].Position.Y + 10 <= 1000)
+                {
+                    if (enemyBullets[v].thrown == true)
+                    {
+                        enemyBullets[v].update(enemyList[0].Position); 
+                    }
+                }
+            }
+        }
 
         /// <summary>
             /// Function called when a key is pressed
