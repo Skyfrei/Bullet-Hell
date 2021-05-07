@@ -93,12 +93,25 @@ namespace PixivAPI
                     
                 }
             }
+
+            new Thread(() => {
+            for (int v = 0; v < enemyBullets.Count; v++)
+            {
+                while (enemyBullets[v].Position.Y + 10 <= 1000)
+                {
+                    if (enemyBullets[v].thrown == true)
+                    {
+                        enemyBullets[v].update(enemyList[0].Position); 
+                    }
+                }
+            }
+            }).Start();
+
             for (int v = 0; v < enemyBullets.Count; v++)
             {   
                 if (enemyBullets[v].thrown == true)
                 {
-                        window.Draw(enemyBullets[v].bulletShape);   
-                        enemyBullets[v].update(enemyList[0].Position); 
+                        window.Draw(enemyBullets[v].bulletShape);    
                 }
             }
             
