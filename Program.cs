@@ -23,7 +23,6 @@ namespace PixivAPI
         public List<Airship.Blueprint.Bullets> bulletList;
         public List<Airship.Blueprint.Bullets> enemyBullets;
         public SFML.Graphics.Text game = new SFML.Graphics.Text($"Game Over! Click space to restart!", new SFML.Graphics.Font("myfont.ttf"));
-           
         public int count;
         public int bulletCount = 4;
         public Thread changeBulletThread; 
@@ -96,14 +95,14 @@ namespace PixivAPI
                     
                 }
             }
-
-            changeBulletThread.Start();
+            
+            ThreadPool.QueueUserWorkItem(o => changeBullet(enemyBullets)); 
 
             for (int v = 0; v < enemyBullets.Count; v++)
             {   
                 if (enemyBullets[v].thrown == true)
                 {
-                        window.Draw(enemyBullets[v].bulletShape);    
+                    window.Draw(enemyBullets[v].bulletShape);    
                 }
             }
             
@@ -159,12 +158,9 @@ namespace PixivAPI
         {
             for (int v = 0; v < enemyBullets.Count; v++)
             {
-                while (enemyBullets[v].Position.Y + 10 <= 1000)
+                if(enemyBullets[v].thrown == true)
                 {
-                    if (enemyBullets[v].thrown == true)
-                    {
                         enemyBullets[v].update(enemyList[0].Position); 
-                    }
                 }
             }
         }
