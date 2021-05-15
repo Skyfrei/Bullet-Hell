@@ -25,7 +25,6 @@ namespace PixivAPI
         public SFML.Graphics.Text game = new SFML.Graphics.Text($"Game Over! Click space to restart!", new SFML.Graphics.Font("myfont.ttf"));
         public int count;
         public int bulletCount = 4;
-        public Thread changeBulletThread; 
         public void Run()
         {
             var window = new SFML.Graphics.RenderWindow(new SFML.Window.VideoMode(800, 1000), "SFML!");
@@ -54,8 +53,6 @@ namespace PixivAPI
                 enemyBullets.Add(new Airship.Blueprint.Bullets(enemyList[0].Position));
             }
 
-            changeBulletThread = new Thread(new ThreadStart(() => changeBullet(enemyBullets)));
-
             var scoreText = new SFML.Graphics.Text($"Score: {player.Score}", new SFML.Graphics.Font("myfont.ttf"));
             while (window.IsOpen)
             {
@@ -78,10 +75,15 @@ namespace PixivAPI
                 window.Draw(element.airshipShape);
                     for (int j = 0; j < enemyBullets.Count; j += 4 )
                     {
-                        for (int kek = 0; kek < enemyList.Count; kek++)
+                        for (int indexOfBullet = 0; indexOfBullet < enemyList.Count; indexOfBullet++)
                         {
-                            enemyBullets[kek + j].thrown = true;
-                            enemyBullets[kek + j].Position = enemyList[kek].Position;
+                            
+                            
+                            if (enemyBullets[indexOfBullet + j].thrown != true){
+                                 enemyBullets[indexOfBullet + j].Position = enemyList[indexOfBullet].Position;
+                            }
+                            enemyBullets[indexOfBullet + j].thrown = true;
+                           
                         }  
                     }
 
@@ -94,20 +96,21 @@ namespace PixivAPI
                     }
                     
                 }
-            }
-            
+            }      
             ThreadPool.QueueUserWorkItem(o => changeBullet(enemyBullets)); 
+            
 
             for (int v = 0; v < enemyBullets.Count; v++)
             {   
                 if (enemyBullets[v].thrown == true)
                 {
-                    window.Draw(enemyBullets[v].bulletShape);    
+                        window.Draw(enemyBullets[v].bulletShape);  
                 }
             }
             
             for (int i = 0; i < bulletList.Count; i++)
-            {      
+            {
+                
                 if (bulletList[i].thrown == true)
                 {
                     window.Draw(bulletList[i].bulletShape); 
@@ -141,8 +144,8 @@ namespace PixivAPI
             }
                 for (int j = 0; j < enemyBullets.Count; j++)
                 {
-                    if (enemyBullets[j].Position.X  + 50 >= player.Position.X &&
-                        enemyBullets[j].Position.X -  80 <= player.Position.X &&
+                    if ((enemyBullets[j].Position.X  + 50 >= player.Position.X &&
+                        enemyBullets[j].Position.X -  50 <= player.Position.X) &&
                         enemyBullets[j].Position.Y == player.Position.Y )
                     {
                         player.Health = 10;
@@ -158,13 +161,22 @@ namespace PixivAPI
         {
             for (int v = 0; v < enemyBullets.Count; v++)
             {
+                int count2 = 1;
                 if(enemyBullets[v].thrown == true)
                 {
-                        enemyBullets[v].update(enemyList[0].Position); 
+                    
+                    for(; ;)
+                    {
+                        enemyBullets[v].update(enemyList[0].Position);  
+                        count2++;
+                        if(count2 % 30 == 0)
+                        {
+                            break;
+                        }
+                    }     
                 }
             }
         }
-
         /// <summary>
             /// Function called when a key is pressed
         /// </summary>

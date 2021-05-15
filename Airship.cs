@@ -16,7 +16,8 @@ namespace Airship
             public SFML.Graphics.CircleShape bulletShape;
             public bool thrown;
             public int yChange;
-            public SFML.System.Vector2f startingPosition{get; set;}
+            private bool done;
+            private SFML.System.Vector2f startingPosition;
             public Bullets(SFML.System.Vector2f shootAngle)
             {
                 this.bulletShape = new SFML.Graphics.CircleShape(5)
@@ -27,6 +28,7 @@ namespace Airship
                 this.Position = new SFML.System.Vector2f(shootAngle.X + 35, shootAngle.Y - 20);
                 this.bulletShape.Position = this.Position;
                 this.startingPosition = this.Position;
+                this.done = false;
                 
             }
             public void update(SFML.System.Vector2f vectorPosition)
@@ -48,13 +50,21 @@ namespace Airship
                 {
                     if (this.Position.Y + 10 <= 1000)
                     {
-                        this.Position = new SFML.System.Vector2f( this.Position.X, this.Position.Y + 0.5f);
+                        if (this.done == false) {
+                            this.done = true;
+                            this.Position = new SFML.System.Vector2f( this.Position.X - 50, this.Position.Y + 0.1f);
+                        }
+                        else {
+                            this.Position = new SFML.System.Vector2f( this.Position.X, this.Position.Y + 0.1f);
+                        }
                         this.bulletShape.Position = this.Position;
                     }
-                    else if (this.Position.Y >= 900 || this.Position.X >= 800 || this.Position.X <= 0)
+                    else if (this.Position.Y >= 950)
                     {
                         this.thrown = false;
+                        this.done = false;
                         this.Position = new SFML.System.Vector2f(vectorPosition.X - 35, vectorPosition.Y + 20);   
+                        
                     }
                 }
                    
