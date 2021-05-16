@@ -125,16 +125,11 @@ namespace Airship
                     this.Position = new SFML.System.Vector2f(780, 100);
                     this.airshipShape.Position = this.Position;
                 } 
-                
             }
-            
         }
-
         public int skill1(){
-
             return 0;
         }
-        
     }
     class Player : Blueprint, Blueprint.Skills, Update, MoveShip
     {

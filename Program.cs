@@ -55,8 +55,7 @@ namespace PixivAPI
 
             var scoreText = new SFML.Graphics.Text($"Score: {player.Score}", new SFML.Graphics.Font("myfont.ttf"));
             while (window.IsOpen)
-            {
-                
+            { 
                 window.Clear();
                 count += 1;
                 render(window, scoreText);
@@ -76,17 +75,13 @@ namespace PixivAPI
                     for (int j = 0; j < enemyBullets.Count; j += 4 )
                     {
                         for (int indexOfBullet = 0; indexOfBullet < enemyList.Count; indexOfBullet++)
-                        {
-                            
-                            
+                        { 
                             if (enemyBullets[indexOfBullet + j].thrown != true){
                                  enemyBullets[indexOfBullet + j].Position = enemyList[indexOfBullet].Position;
                             }
                             enemyBullets[indexOfBullet + j].thrown = true;
-                           
                         }  
                     }
-
                 if (count == 150)
                 {
                     element.update(window);
@@ -94,11 +89,9 @@ namespace PixivAPI
                     {
                         count = 0;
                     }
-                    
                 }
             }      
-            ThreadPool.QueueUserWorkItem(o => changeBullet(enemyBullets)); 
-            
+            ThreadPool.QueueUserWorkItem(o => changeBullet(enemyBullets));
 
             for (int v = 0; v < enemyBullets.Count; v++)
             {   
@@ -124,7 +117,6 @@ namespace PixivAPI
                         bulletList[i].Position.Y == enemyList[j].Position.Y )
                     {
                        enemyList[j].Health = 20; 
-                       Console.WriteLine(enemyList[j].Health);
                         if (enemyList[j].Health <= 0)
                         {
                             player.Score++;
@@ -144,15 +136,21 @@ namespace PixivAPI
             }
                 for (int j = 0; j < enemyBullets.Count; j++)
                 {
-                    if ((enemyBullets[j].Position.X  + 50 >= player.Position.X &&
-                        enemyBullets[j].Position.X -  50 <= player.Position.X) &&
-                        enemyBullets[j].Position.Y == player.Position.Y )
-                    {
-                        player.Health = 10;
-                        enemyBullets[j].update(enemyList[0].Position);
-                        enemyBullets[j].thrown = false;
-                        Console.WriteLine(player.Health);
+                    if(player.Health <= 0 ){
+                        window.Close();
+                        break;
                     }
+                        if (enemyBullets[j].Position.Y < 800) continue;
+                        if (enemyBullets[j].Position.X + 30 >= player.Position.X &&
+                            enemyBullets[j].Position.X - 30 <= player.Position.X &&
+                            enemyBullets[j].Position.Y + 10 >= player.Position.Y &&
+                            enemyBullets[j].Position.Y - 10 <= player.Position.Y)
+                        {
+                            player.Health = 10;
+                            enemyBullets[j].update(enemyList[0].Position);
+                            enemyBullets[j].thrown = false; 
+                            Console.WriteLine(player.Health);
+                        }
                 }
             window.Draw(scoreText);
         } 
@@ -163,8 +161,7 @@ namespace PixivAPI
             {
                 int count2 = 1;
                 if(enemyBullets[v].thrown == true)
-                {
-                    
+                {         
                     for(; ;)
                     {
                         enemyBullets[v].update(enemyList[0].Position);  
